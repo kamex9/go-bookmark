@@ -1,0 +1,17 @@
+name: "infra-tools"
+
+services:
+  server:
+    build:
+      context: ..
+      dockerfile: .devcontainer/Dockerfile
+
+    command: sleep infinity
+
+    volumes:
+    - ..:/workspaces/infra-tools:cached
+    - ./.bashrc:/home/vscode/.bashrc:ro,cached
+    - ~/.aws/config:/home/vscode/.aws/config:ro,cached
+    - ~/.aws/credentials:/home/vscode/.aws/credentials:ro,cached
+
+    user: vscode

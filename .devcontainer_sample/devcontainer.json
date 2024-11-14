@@ -1,0 +1,49 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/ruby
+{
+  "name": "infra-tools",
+  "dockerComposeFile": "compose.yaml",
+  "service": "server",
+  "workspaceFolder": "/workspaces/infra-tools",
+  // Features to add to the dev container. More info: https://containers.dev/features.
+  "features": {
+  },
+  "containerEnv": {
+    // "AWS_ACCESS_KEY_ID": "your_access_key_id",
+    // "AWS_SECRET_ACCESS_KEY": "your_secret_access_key",
+    // "AWS_REGION": "ap-northeast-1"
+  },
+  // Use 'forwardPorts' to make a list of ports inside the container available locally.
+  "forwardPorts": [
+  ],
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "[ruby]": {
+          "editor.defaultFormatter": "misogi.ruby-rubocop"
+        }
+      },
+      "extensions": [
+        "Shopify.ruby-extensions-pack",
+        "misogi.ruby-rubocop",
+        "ms-azuretools.vscode-docker",
+        "HashiCorp.terraform",
+        "gerane.Theme-Dark-Dracula",
+        "MS-CEINTL.vscode-language-pack-ja",
+        "rangav.vscode-thunder-client",
+        "kaiwood.endwise",
+        "castwide.solargraph",
+        "oderwat.indent-rainbow",
+        "PKief.material-icon-theme",
+        "donjayamanne.githistory",
+        "golang.go"
+      ]
+    }
+  },
+  // Configure tool-specific properties.
+  // "customizations": {},
+  // Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
+  // "remoteUser": "root",
+  // Use 'postCreateCommand' to run commands after the container is created.
+  "postCreateCommand": "bin/setup"
+}
