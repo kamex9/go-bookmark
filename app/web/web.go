@@ -15,9 +15,14 @@ import (
 var store = core.NewStore()
 
 // 共通のレスポンス構造体
-type Response struct {
-	Data    any    `json:"data"`
+type Error struct {
+	Code    string `json:"code"`
 	Message string `json:"message"`
+}
+
+type Response struct {
+	Data  any    `json:"data"`
+	Error *Error `json:"error,omitempty"`
 }
 
 // ハンドラーのラッパー関数
@@ -32,15 +37,20 @@ func withLogging(handler func(w http.ResponseWriter, r *http.Request) (any, erro
 
 		// 実際のハンドラー処理を実行
 		data, err := handler(w, r)
+
+		// Errorフィールドにはポインタ型初期値のnilが設定される
+		// ※ポインタ型にしないと、ユーザー定義型の初期値である空オブジェクトが設定されてしまうためjson:omitemptyが効かなくなる
 		response := Response{Data: data}
 		if err != nil {
 			log.Printf("Error processing request: %v", err)
 			// http.Error(w, err.Error(), http.StatusBadRequest)
 			w.WriteHeader(http.StatusBadRequest)
-			response = Response{
+			pError := &Error{
+				Code:    "E0001",
 				Message: err.Error(),
-				Data:    nil,
 			}
+			// Dataフィールドにはany型初期値のnilが設定される
+			response = Response{Error: pError}
 		}
 
 		// レスポンスの書き込み
