@@ -6,21 +6,21 @@ import (
 	"time"
 )
 
-type CustomeTime time.Time
+type CustomTime time.Time
 
 // MarshalJSON implements the json.Marshaler interface.
 // It formats the time according to the specified layout.
-func (ct CustomeTime) MarshalJSON() ([]byte, error) {
+func (ct CustomTime) MarshalJSON() ([]byte, error) {
 	return json.Marshal(time.Time(ct).Format(time.DateTime))
 }
 
 // TODO: 重複を許容してしまっている
 // TODO: ID識別がないのでエンティティとしては機能しない
 type Bookmark struct {
-	ID        uint64      `json:"id"`
-	URL       string      `json:"url"`
-	Title     string      `json:"title"`
-	CreatedAt CustomeTime `json:"created_at"`
+	ID        uint64     `json:"id"`
+	URL       string     `json:"url"`
+	Title     string     `json:"title"`
+	CreatedAt CustomTime `json:"created_at"`
 }
 
 var bookmarkData = map[uint64]Bookmark{
@@ -41,7 +41,7 @@ func NewBookmark(id uint64) (*Bookmark, error) {
 	if !exists {
 		return nil, fmt.Errorf("bookmark with ID %d does not exist", id)
 	}
-	bookmark.CreatedAt = CustomeTime(time.Now())
+	bookmark.CreatedAt = CustomTime(time.Now())
 	return &bookmark, nil
 }
 
