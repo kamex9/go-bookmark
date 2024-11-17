@@ -37,8 +37,17 @@ type BookmarkPostRequest struct {
 }
 
 type BookmarkResponse struct {
-	ID        uint16     `json:"id"`
+	ID        string     `json:"id"`
 	URL       string     `json:"url"`
 	Title     string     `json:"title"`
 	CreatedAt CustomTime `json:"created_at"`
+}
+
+func NewBookmarkResponse(bm *Bookmark) *BookmarkResponse {
+	return &BookmarkResponse{
+		ID:        bm.ID,
+		URL:       bm.URL,
+		Title:     bm.Title,
+		CreatedAt: bm.CreatedAt,
+	}
 }

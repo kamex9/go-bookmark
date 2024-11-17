@@ -22,12 +22,7 @@ func createBookmark(w http.ResponseWriter, r *http.Request) {
 
 	bm := models.NewBookmark(req)
 	repo.Save(bm)
-	bms, err := repo.FindAll()
-	if err != nil {
-		writeResponse(w, nil, models.NewError("E0002", err))
-		return
-	}
-	writeResponse(w, bms, nil)
+	writeResponse(w, models.NewBookmarkResponse(bm), nil)
 }
 
 func fetchAllBookmark(w http.ResponseWriter, r *http.Request) {
@@ -36,7 +31,11 @@ func fetchAllBookmark(w http.ResponseWriter, r *http.Request) {
 		writeResponse(w, nil, models.NewError("E1001", err))
 		return
 	}
-	writeResponse(w, bms, nil)
+	res_bms := make([]*models.BookmarkResponse, 0, len(bms))
+	for _, bm := range bms {
+		res_bms = append(res_bms, models.NewBookmarkResponse(bm))
+	}
+	writeResponse(w, res_bms, nil)
 }
 
 func fetchBookmarkById(w http.ResponseWriter, r *http.Request) {
@@ -50,7 +49,7 @@ func fetchBookmarkById(w http.ResponseWriter, r *http.Request) {
 		writeResponse(w, nil, models.NewError("E2002", err))
 		return
 	}
-	writeResponse(w, bm, nil)
+	writeResponse(w, models.NewBookmarkResponse(bm), nil)
 }
 
 func writeResponse(w http.ResponseWriter, data any, err *models.Error) {
