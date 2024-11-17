@@ -1,25 +1,23 @@
 package web
 
 import (
-	"encoding/json"
-	"go-bookmark/core/models"
-	"log"
+	"go-bookmark/core/logging"
 	"net/http"
+	"os"
+	"time"
 
 	"github.com/gorilla/mux"
 )
 
-type BM models.Bookmark
+var logger = logging.GetLogger()
 
-// 共通のレスポンス構造体
-type Error struct {
-	Code    string `json:"code"`
-	Message string `json:"message"`
-}
-
-type Response struct {
-	Data  any    `json:"data"`
-	Error *Error `json:"error,omitempty"`
+func loggingMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		start := time.Now()
+		next.ServeHTTP(w, r)
+		elapsed := time.Since(start)
+		logger.Info("Access Info", "method", r.Method, "path", r.URL.Path, "elapsed", elapsed)
+	})
 }
 
 // ハンドラーのラッパー関数
@@ -58,11 +56,6 @@ type Response struct {
 // 		log.Printf("Request processed in %v", elapsed)
 // 	}
 // }
-
-// 各ハンドラーの実装をシンプルに
-func pingHandler(w http.ResponseWriter, r *http.Request) {
-	json.NewEncoder(w).Encode(map[string]string{"message": "pong"})
-}
 
 // func storeHandler(w http.ResponseWriter, r *http.Request) (any, error) {
 // 	vars := mux.Vars(r)
@@ -111,22 +104,18 @@ func pingHandler(w http.ResponseWriter, r *http.Request) {
 
 func StartServer() {
 	// ログの初期設定（タイムスタンプ、ファイル名、行番号を表示）
-	log.SetFlags(log.Ldate | log.Ltime | log.Lshortfile)
+	// log.SetFlags(log.Ldate | log.Ltime | log.Lshortfile)
 
 	router := mux.NewRouter().StrictSlash(true)
-
-	// ハンドラーの登録
-	router.HandleFunc("/ping", pingHandler).Methods("GET")
-	// router.HandleFunc("/store/{id}", withLogging(storeHandler)).Methods("GET")
-	// router.HandleFunc("/reset", withLogging(resetHandler)).Methods("GET")
+	router.Use(loggingMiddleware)
 	router.HandleFunc("/bookmark", createBookmark).Methods("POST")
 	router.HandleFunc("/bookmark/{id}", fetchBookmarkById).Methods("GET")
 	router.HandleFunc("/bookmarks", fetchAllBookmark).Methods("GET")
 
-	// サーバー起動のログ
-	log.Println("Starting HTTP server on :8080")
+	logger.Info("Starting HTTP server on :8080")
 
 	if err := http.ListenAndServe(":8080", router); err != nil {
-		log.Fatalf("Server failed to start: %v", err)
+		logger.Error("Server failed to start", "error", err)
+		os.Exit(1)
 	}
 }
