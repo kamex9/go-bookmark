@@ -30,7 +30,7 @@ func (ms *MemoryStore) FindById(id string) (*models.Bookmark, error) {
 			return bm, nil
 		}
 	}
-	return nil, fmt.Errorf("specified id '%s' value not found", id)
+	return nil, fmt.Errorf("specified id '%s' not found", id)
 }
 
 func (ms *MemoryStore) DeleteAll() {
