@@ -10,7 +10,7 @@ const (
 	_ StoreMode = iota
 	MEMORY
 	FILE
-	RDBMS
+	DATABASE
 )
 
 type Repository interface {
@@ -24,7 +24,11 @@ func NewRepository(mode StoreMode) Repository {
 	switch mode {
 	case MEMORY:
 		return NewMemoryStore()
+	// case FILE:
+	// 	return NewFileStore()
+	// case DATABASE:
+	// 	return NewDatabaseStore()
 	default:
-		return nil
+		return NewMemoryStore()
 	}
 }
