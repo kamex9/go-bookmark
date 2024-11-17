@@ -55,7 +55,7 @@ func fetchBookmarkById(w http.ResponseWriter, r *http.Request) {
 func writeResponse(w http.ResponseWriter, data any, err *models.Error) {
 	var response models.Response
 	if err != nil {
-		logger.Error("Error occurred in processing", "error", err)
+		logger.Error("Error occurred in processing", "error", *err)
 		w.WriteHeader(http.StatusBadRequest)
 		// Dataフィールドにはany型初期値のnilが設定される
 		response = models.Response{Error: err}
