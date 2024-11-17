@@ -20,7 +20,7 @@ func createBookmark(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	bm := models.NewBookmark(req)
+	bm := models.NewBookmark(&req)
 	repo.Save(bm)
 	writeResponse(w, models.NewBookmarkResponse(bm), nil)
 }
