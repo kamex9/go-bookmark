@@ -12,17 +12,17 @@ import (
 
 type BookmarkRestController struct {
 	l  *slog.Logger
-	uc usecase.CreateBookmarkUseCase
+	uc usecase.CrudBookmarkUseCase
 }
 
-func NewBookmarkRestController(l *slog.Logger, uc usecase.CreateBookmarkUseCase) *BookmarkRestController {
+func NewBookmarkRestController(l *slog.Logger, uc usecase.CrudBookmarkUseCase) *BookmarkRestController {
 	return &BookmarkRestController{
 		l:  l,
 		uc: uc,
 	}
 }
 
-func (c *BookmarkRestController) CreateBookmark(w http.ResponseWriter, r *http.Request) {
+func (c *BookmarkRestController) Create(w http.ResponseWriter, r *http.Request) {
 	reqBody, _ := io.ReadAll(r.Body)
 	c.l.Info("Params info", "body", string(reqBody))
 
@@ -32,22 +32,45 @@ func (c *BookmarkRestController) CreateBookmark(w http.ResponseWriter, r *http.R
 		return
 	}
 
-	bm, _ := c.uc.CreateBookmark(&req)
+	bm, _ := c.uc.Create(&req)
 	utils.WriteResponse(w, bm, nil)
 }
 
-// func fetchAllBookmark(w http.ResponseWriter, r *http.Request) {
-// 	bms, err := repo.FindAll()
-// 	if err != nil {
-// 		writeResponse(w, nil, models.NewError("E1001", err))
-// 		return
-// 	}
-// 	res_bms := make([]*models.BookmarkResponse, 0, len(bms))
-// 	for _, bm := range bms {
-// 		res_bms = append(res_bms, models.NewBookmarkResponse(bm))
-// 	}
-// 	writeResponse(w, res_bms, nil)
-// }
+func (c *BookmarkRestController) FetchAll(w http.ResponseWriter, r *http.Request) {
+	bms, err := c.uc.FindAll()
+	if err != nil {
+		utils.WriteResponse(w, nil, dto.NewError("E1001", err))
+		return
+	}
+	res := make([]*dto.BookmarkResponse, 0, len(bms))
+	for _, bm := range bms {
+		res = append(res, dto.NewBookmarkResponse(bm))
+	}
+	utils.WriteResponse(w, res, nil)
+}
+
+func (c *BookmarkRestController) FetchById(w http.ResponseWriter, r *http.Request) {
+	id, err := utils.RetrievePathParamValue("id", r)
+	if err != nil {
+		utils.WriteResponse(w, nil, dto.NewError("E2001", err))
+		return
+	}
+	bm, err := c.uc.FindById(id)
+	if err != nil {
+		utils.WriteResponse(w, nil, dto.NewError("E2002", err))
+		return
+	}
+	utils.WriteResponse(w, dto.NewBookmarkResponse(bm), nil)
+}
+
+func (c *BookmarkRestController) DeleteAll(w http.ResponseWriter, r *http.Request) {
+	err := c.uc.DeleteAll()
+	if err != nil {
+		utils.WriteResponse(w, nil, dto.NewError("E2002", err))
+		return
+	}
+	utils.WriteResponse(w, nil, nil)
+}
 
 // func fetchBookmarkById(w http.ResponseWriter, r *http.Request) {
 // 	id, err := utils.RetrievePathParamValue("id", r)

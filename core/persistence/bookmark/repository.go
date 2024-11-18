@@ -8,7 +8,7 @@ type Repository interface {
 	Save(*BookmarkEntity) error
 	FindAll() ([]*BookmarkEntity, error)
 	FindById(string) (*BookmarkEntity, error)
-	DeleteAll()
+	DeleteAll() error
 }
 
 func NewBookmarkRepository(mode constants.StoreMode) Repository {

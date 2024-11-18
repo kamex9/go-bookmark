@@ -7,22 +7,51 @@ import (
 	"go-bookmark/core/persistence/bookmark"
 )
 
-type CreateBookmarkUseCase interface {
-	CreateBookmark(*dto.BookmarkCreateRequest) (*models.Bookmark, error)
+type CrudBookmarkUseCase interface {
+	Create(*dto.BookmarkCreateRequest) (*models.Bookmark, error)
+	FindAll() ([]*models.Bookmark, error)
+	FindById(string) (*models.Bookmark, error)
+	DeleteAll() error
 }
 
 type CreateBookmarkService struct {
-	repository bookmark.Repository
+	repo bookmark.Repository
 }
 
 func NewCreateBookmarkService(mode constants.StoreMode) *CreateBookmarkService {
 	return &CreateBookmarkService{
-		repository: bookmark.NewBookmarkRepository(mode),
+		repo: bookmark.NewBookmarkRepository(mode),
 	}
 }
 
-func (s *CreateBookmarkService) CreateBookmark(dto *dto.BookmarkCreateRequest) (*models.Bookmark, error) {
-	entity := bookmark.NewBookmarkEntityForCreate(dto)
-	s.repository.Save(entity)
-	return entity.NewBookmarkFromEntity(), nil
+func (s *CreateBookmarkService) Create(dto *dto.BookmarkCreateRequest) (*models.Bookmark, error) {
+	e := bookmark.NewBookmarkEntityForCreate(dto)
+	s.repo.Save(e)
+	return e.NewBookmarkFromEntity(), nil
+}
+
+func (s *CreateBookmarkService) FindAll() ([]*models.Bookmark, error) {
+	es, err := s.repo.FindAll()
+	return convertBookmarkEntitiesToModels(es), err
+}
+
+func (s *CreateBookmarkService) FindById(id string) (*models.Bookmark, error) {
+	e, err := s.repo.FindById(id)
+	if e == nil {
+		return nil, err
+	}
+	return e.NewBookmarkFromEntity(), err
+}
+
+func (s *CreateBookmarkService) DeleteAll() error {
+	s.repo.DeleteAll()
+	return nil
+}
+
+func convertBookmarkEntitiesToModels(es []*bookmark.BookmarkEntity) []*models.Bookmark {
+	results := make([]*models.Bookmark, 0, len(es))
+	for _, e := range es {
+		results = append(results, e.NewBookmarkFromEntity())
+	}
+	return results
 }

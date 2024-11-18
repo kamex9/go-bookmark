@@ -31,9 +31,10 @@ func loggingMiddleware(next http.Handler) http.Handler {
 func StartServer() {
 	router := mux.NewRouter().StrictSlash(true)
 	router.Use(loggingMiddleware)
-	router.HandleFunc("/bookmark", brc.CreateBookmark).Methods("POST")
-	// router.HandleFunc("/bookmark/{id}", restcontroller.fetchBookmarkById).Methods("GET")
-	// router.HandleFunc("/bookmarks", restcontroller.fetchAllBookmark).Methods("GET")
+	router.HandleFunc("/bookmark", brc.Create).Methods("POST")
+	router.HandleFunc("/bookmark/{id}", brc.FetchById).Methods("GET")
+	router.HandleFunc("/bookmarks", brc.FetchAll).Methods("GET")
+	router.HandleFunc("/bookmarks", brc.DeleteAll).Methods("DELETE")
 
 	l.Info("Starting HTTP server on :8080")
 

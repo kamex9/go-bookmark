@@ -32,6 +32,7 @@ func (ms *BookmarkMemoryStore) FindById(id string) (*BookmarkEntity, error) {
 	return nil, fmt.Errorf("specified id '%s' not found", id)
 }
 
-func (ms *BookmarkMemoryStore) DeleteAll() {
+func (ms *BookmarkMemoryStore) DeleteAll() error {
 	ms.data = make([]*BookmarkEntity, 0, 256)
+	return nil
 }
