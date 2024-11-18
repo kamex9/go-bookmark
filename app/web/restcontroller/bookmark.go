@@ -71,17 +71,3 @@ func (c *BookmarkRestController) DeleteAll(w http.ResponseWriter, r *http.Reques
 	}
 	utils.WriteResponse(w, nil, nil)
 }
-
-// func fetchBookmarkById(w http.ResponseWriter, r *http.Request) {
-// 	id, err := utils.RetrievePathParamValue("id", r)
-// 	if err != nil {
-// 		writeResponse(w, nil, models.NewError("E2001", err))
-// 		return
-// 	}
-// 	bm, err := repo.FindById(id)
-// 	if err != nil {
-// 		writeResponse(w, nil, models.NewError("E2002", err))
-// 		return
-// 	}
-// 	writeResponse(w, models.NewBookmarkResponse(bm), nil)
-// }
