@@ -2,7 +2,7 @@ package repository
 
 import (
 	"fmt"
-	"go-bookmark/core/models"
+	"go-bookmark/core/domain/models"
 )
 
 type MemoryStore struct {

@@ -1,4 +1,4 @@
-package models
+package dto
 
 import (
 	"encoding/json"
@@ -29,25 +29,4 @@ type CustomTime time.Time
 // It formats the time according to the specified layout.
 func (ct CustomTime) MarshalJSON() ([]byte, error) {
 	return json.Marshal(time.Time(ct).Format(time.DateTime))
-}
-
-type BookmarkPostRequest struct {
-	URL   string `json:"url"`
-	Title string `json:"title"`
-}
-
-type BookmarkResponse struct {
-	ID        string     `json:"id"`
-	URL       string     `json:"url"`
-	Title     string     `json:"title"`
-	CreatedAt CustomTime `json:"created_at"`
-}
-
-func NewBookmarkResponse(bm *Bookmark) *BookmarkResponse {
-	return &BookmarkResponse{
-		ID:        bm.ID,
-		URL:       bm.URL,
-		Title:     bm.Title,
-		CreatedAt: bm.CreatedAt,
-	}
 }
