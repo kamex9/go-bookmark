@@ -8,7 +8,7 @@ type BookmarkMemoryStore struct {
 	data []*BookmarkEntity
 }
 
-func NewBookmarkMemoryStore() *BookmarkMemoryStore {
+func NewMemoryStore() *BookmarkMemoryStore {
 	return &BookmarkMemoryStore{
 		data: make([]*BookmarkEntity, 0, 256),
 	}

@@ -11,15 +11,15 @@ type Repository interface {
 	DeleteAll() error
 }
 
-func NewBookmarkRepository(mode constants.StoreMode) Repository {
+func NewRepository(mode constants.StoreMode) Repository {
 	switch mode {
 	case constants.MEMORY:
-		return NewBookmarkMemoryStore()
+		return NewMemoryStore()
 	// case constants.FILE:
 	// 	return NewFileStore()
 	// case constants.DATABASE:
 	// 	return NewDatabaseStore()
 	default:
-		return NewBookmarkMemoryStore()
+		return NewMemoryStore()
 	}
 }

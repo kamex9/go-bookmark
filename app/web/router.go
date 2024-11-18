@@ -16,7 +16,7 @@ var l = utils.GetLogger()
 
 var brc = restcontroller.NewBookmarkRestController(
 	l,
-	usecase.NewCreateBookmarkService(constants.MEMORY),
+	usecase.NewCrudBookmarkService(constants.MEMORY),
 )
 
 func loggingMiddleware(next http.Handler) http.Handler {

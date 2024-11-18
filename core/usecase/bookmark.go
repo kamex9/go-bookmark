@@ -14,28 +14,28 @@ type CrudBookmarkUseCase interface {
 	DeleteAll() error
 }
 
-type CreateBookmarkService struct {
+type CrudBookmarkService struct {
 	repo bookmark.Repository
 }
 
-func NewCreateBookmarkService(mode constants.StoreMode) *CreateBookmarkService {
-	return &CreateBookmarkService{
-		repo: bookmark.NewBookmarkRepository(mode),
+func NewCrudBookmarkService(mode constants.StoreMode) *CrudBookmarkService {
+	return &CrudBookmarkService{
+		repo: bookmark.NewRepository(mode),
 	}
 }
 
-func (s *CreateBookmarkService) Create(dto *dto.BookmarkCreateRequest) (*models.Bookmark, error) {
+func (s *CrudBookmarkService) Create(dto *dto.BookmarkCreateRequest) (*models.Bookmark, error) {
 	e := bookmark.NewBookmarkEntityForCreate(dto)
 	s.repo.Save(e)
 	return e.NewBookmarkFromEntity(), nil
 }
 
-func (s *CreateBookmarkService) FindAll() ([]*models.Bookmark, error) {
+func (s *CrudBookmarkService) FindAll() ([]*models.Bookmark, error) {
 	es, err := s.repo.FindAll()
 	return convertBookmarkEntitiesToModels(es), err
 }
 
-func (s *CreateBookmarkService) FindById(id string) (*models.Bookmark, error) {
+func (s *CrudBookmarkService) FindById(id string) (*models.Bookmark, error) {
 	e, err := s.repo.FindById(id)
 	if e == nil {
 		return nil, err
@@ -43,7 +43,7 @@ func (s *CreateBookmarkService) FindById(id string) (*models.Bookmark, error) {
 	return e.NewBookmarkFromEntity(), err
 }
 
-func (s *CreateBookmarkService) DeleteAll() error {
+func (s *CrudBookmarkService) DeleteAll() error {
 	s.repo.DeleteAll()
 	return nil
 }
